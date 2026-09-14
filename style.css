@@ -1,0 +1,182 @@
+/* ===========================
+   PALETA DE CORES
+=========================== */
+
+:root{
+    --cor-fundo: #07131F;
+    --cor-principal: #102537;
+    --cor-secundaria: #1B3A4B;
+    --cor-destaque: #2ED3E6;
+    --cor-texto: #E8F8FF;
+}
+
+/* ===========================
+   CONFIGURAÇÕES GERAIS
+=========================== */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background: linear-gradient(180deg, #07131F 0%, #0C1E2C 100%);
+    color: var(--cor-texto);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 100vh;
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ===========================
+   CAIXA PRINCIPAL
+=========================== */
+
+.caixa-principal{
+
+    background-color: var(--cor-principal);
+
+    width: 90%;
+    max-width: 700px;
+
+    padding: 30px;
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    border: 2px solid rgba(46,211,230,.35);
+
+    box-shadow:
+        0 0 20px rgba(46,211,230,.15),
+        0 0 45px rgba(46,211,230,.08);
+}
+
+/* ===========================
+   TÍTULO
+=========================== */
+
+h1{
+
+    color: var(--cor-destaque);
+
+    margin-bottom: 25px;
+
+    font-size: 2rem;
+}
+
+/* ===========================
+   PERGUNTA
+=========================== */
+
+.caixa-perguntas{
+
+    font-size: 1.2rem;
+
+    line-height: 1.6;
+
+    margin-bottom: 25px;
+}
+
+/* ===========================
+   BOTÕES
+=========================== */
+
+.caixa-alternativas{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+button{
+
+    background-color: var(--cor-secundaria);
+
+    color: var(--cor-texto);
+
+    border: none;
+
+    border-radius: 15px;
+
+    padding: 16px;
+
+    cursor: pointer;
+
+    font-size: 1rem;
+
+    transition: .3s;
+}
+
+button:hover{
+
+    background-color: var(--cor-destaque);
+
+    color: var(--cor-principal);
+
+    transform: translateY(-3px);
+
+    box-shadow: 0 0 18px rgba(46,211,230,.45);
+}
+
+/* ===========================
+   RESULTADO
+=========================== */
+
+.caixa-resultado{
+
+    margin-top: 30px;
+
+    font-size: 1.1rem;
+
+    line-height: 1.7;
+}
+
+.caixa-resultado{
+    
+    display: none;
+}
+
+.caixa-resultado.mostrar{
+
+    display: block;
+}
+
+.texto-resultado{
+
+    color: var(--cor-texto);
+}
+
+/* ===========================
+   RESPONSIVIDADE
+=========================== */
+
+@media(max-width:600px){
+
+    .caixa-principal{
+
+        padding:20px;
+    }
+
+    h1{
+
+        font-size:1.6rem;
+    }
+
+    .caixa-perguntas{
+
+        font-size:1rem;
+    }
+
+    button{
+
+        font-size:.95rem;
+    }
+}
