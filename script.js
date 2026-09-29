@@ -1,139 +1,175 @@
 import { aleatorio, nome } from "./aleatorio.js";
 import { perguntas } from "./perguntas.js";
-console.log(perguntas);
-console.log("Script funcionando corretamente!");
 
-const caixaPrincipal = document.querySelector(".caixa-principal");
 const caixaPerguntas = document.querySelector(".caixa-perguntas");
 const caixaAlternativas = document.querySelector(".caixa-alternativas");
 const caixaResultado = document.querySelector(".caixa-resultado");
 const textoResultado = document.querySelector(".texto-resultado");
-const BotaoJogarNovamente = document.querySelector(".novamente-btn");
+
+const botaoJogarNovamente = document.querySelector(".novamente-btn");
 const botaoIniciar = document.querySelector(".iniciar-btn");
 const telaInicial = document.querySelector(".tela-inicial");
-
-
 
 let atual = 0;
 let perguntaAtual;
 let historiaFinal = "";
 
+let perguntasDaPartida = [];
+
 botaoIniciar.addEventListener("click", iniciaJogo);
+botaoJogarNovamente.addEventListener("click", jogaNovamente);
 
 
+// =====================================
+// SORTEIA AS PERGUNTAS DA PARTIDA
+// =====================================
 
-function iniciaJogo(){
-	atual = 0;
-	historiaFinal = "";
-	telaInicial.style.display = 'none';
-	caixaPerguntas.classList.remove("mostrar");
-	caixaAlternativas.classList.remove("mostrar");
-	caixaResultado.classList.remove("mostrar");
-	mostraPergunta();
+function sorteiaPerguntas() {
 
-}
+    perguntasDaPartida = [];
 
-function mostraPergunta() {
+    // Descobre todas as etapas existentes
+    const etapas = [...new Set(perguntas.map(pergunta => pergunta.etapa))];
 
-    if (atual >= perguntas.length) {
-        mostraResultado();
-        return;
-    }
+    for (const etapa of etapas) {
 
-    perguntaAtual = perguntas[atual];
+        // Procura todas as perguntas daquela etapa
+        const perguntasDaEtapa = perguntas.filter(
+            pergunta => pergunta.etapa === etapa
+        );
 
-    caixaPerguntas.textContent = perguntaAtual.enunciado;
+        // Escolhe uma pergunta aleatória
+        const perguntaSorteada = aleatorio(perguntasDaEtapa);
 
-    caixaAlternativas.textContent = "";
-
-    mostraAlternativas();
-}
-
-function mostraAlternativas() {
-
-    for (const alternativa of perguntaAtual.alternativas) {
-
-        const botaoAlternativas = document.createElement("button");
-
-        botaoAlternativas.textContent = alternativa.texto;
-
-        botaoAlternativas.addEventListener("click", function () {
-            respostaSelecionada(alternativa);
-        });
-
-        caixaAlternativas.appendChild(botaoAlternativas);
+        perguntasDaPartida.push(perguntaSorteada);
     }
 }
 
-function respostaSelecionada(opcaoSelecionada) {
 
-    const afirmacao = aleatorio(opcaoSelecionada.afirmacao);
+// =====================================
+// INICIAR
+// =====================================
 
-    historiaFinal += afirmacao + " ";
-
-    atual++;
-
-    if (opcaoSelecionada.proxima !== undefined) {
-        atual = opcaoSelecionada.proxima;
-    } else {
-        mostraResultado();
-        return;
-    }
-
-    mostraPergunta();
-}
-
-function mostraResultado() {
-
-    caixaPerguntas.textContent =
-        `Parabéns, ${nome}! Você concluiu a história!`;
-
-    textoResultado.innerHTML = `
-        ${historiaFinal}
-
-        <br><br>
-
-        Graças às suas escolhas, você desenvolveu habilidades importantes
-        como criatividade, trabalho em equipe, resolução de problemas e inovação.
-
-        <br><br>
-
-        Seu interesse pela robótica abriu portas para um futuro cheio de
-        oportunidades, mostrando que a tecnologia pode ser utilizada para
-        melhorar a vida das pessoas e construir um mundo mais inteligente.
-
-        <br><br>
-
-        🚀 Continue aprendendo, criando e inovando.
-        O próximo grande projeto pode ser o seu!
-    `;
-
-    caixaAlternativas.textContent = "";
-
-    caixaResultado.classList.add("mostrar");
-
-    BotaoJogarNovamente.addEventListener("click",jogarNovamente);
-}
-
-
-
-
-function jogarNovamente() {
+function iniciaJogo() {
 
     atual = 0;
-
     historiaFinal = "";
 
+    sorteiaPerguntas();
+
+    telaInicial.style.display = "none";
     caixaResultado.classList.remove("mostrar");
 
     mostraPergunta();
 }
 
-function substituiNome() {
-    for (const pergunta of perguntas) {
-        pergunta.enunciado = pergunta.enunciado.replace(/você/g, nome);
+
+// =====================================
+// MOSTRAR PERGUNTA
+// =====================================
+
+function mostraPergunta() {
+
+    if (atual >= perguntasDaPartida.length) {
+        mostraResultado();
+        return;
+    }
+
+    perguntaAtual = perguntasDaPartida[atual];
+
+    caixaPerguntas.textContent = perguntaAtual.enunciado;
+    caixaAlternativas.textContent = "";
+
+    mostraAlternativas();
+}
+
+
+// =====================================
+// MOSTRAR ALTERNATIVAS
+// =====================================
+
+function mostraAlternativas() {
+
+    for (const alternativa of perguntaAtual.alternativas) {
+
+        const botaoAlternativa = document.createElement("button");
+
+        botaoAlternativa.textContent = alternativa.texto;
+
+        botaoAlternativa.addEventListener("click", () => {
+            respostaSelecionada(alternativa);
+        });
+
+        caixaAlternativas.appendChild(botaoAlternativa);
     }
 }
 
-  substituiNome();
- 
+
+// =====================================
+// RESPOSTA
+// =====================================
+
+function respostaSelecionada(opcaoSelecionada) {
+
+    // Sorteia UMA das afirmações
+    const afirmacaoSorteada = aleatorio(
+        opcaoSelecionada.afirmacao
+    );
+
+    historiaFinal += afirmacaoSorteada + " ";
+
+    atual++;
+
+    mostraPergunta();
+}
+
+
+// =====================================
+// RESULTADO
+// =====================================
+
+function mostraResultado() {
+
+    caixaPerguntas.textContent =
+        `Parabéns, ${nome}! Você concluiu sua jornada na robótica!`;
+
+    caixaAlternativas.textContent = "";
+
+    textoResultado.textContent = historiaFinal;
+
+    caixaResultado.classList.add("mostrar");
+}
+
+
+// =====================================
+// JOGAR NOVAMENTE
+// =====================================
+
+function jogaNovamente() {
+
+    atual = 0;
+    historiaFinal = "";
+
+    caixaResultado.classList.remove("mostrar");
+
+    // Sorteia novas perguntas
+    sorteiaPerguntas();
+
+    mostraPergunta();
+}
+
+
+// =====================================
+// SUBSTITUI "VOCÊ" PELO NOME
+// =====================================
+
+function substituiNome() {
+
+    for (const pergunta of perguntas) {
+
+        pergunta.enunciado =
+            pergunta.enunciado.replace(/você/gi, nome);
+    }
+}
+
+substituiNome();
